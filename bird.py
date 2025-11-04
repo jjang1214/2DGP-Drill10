@@ -1,8 +1,20 @@
 from pico2d import *
+import random
 
 import game_world
 import game_framework
 from state_machine import StateMachine
+
+
+PIXEL_PER_METER = (10.0 / 0.3)
+RUN_SPEED_KMPH = 20.0
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 14
 
 
 class Fly:
@@ -16,19 +28,23 @@ class Fly:
         pass
 
     def do(self):
-        pass
+        self.bird.frame = (self.bird.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 14
+        self.bird.x += self.bird.dir * RUN_SPEED_PPS * game_framework.frame_time
 
     def draw(self):
-        pass
+        if self.bird.face_dir == 1:
+            self.bird.image.clip_draw(int(self.bird.frame) * 183, 170, 150, 150, self.bird.x, self.bird.y)
+        else:
+            self.bird.image.clip_composite_draw(int(self.bird.frame) * 183, 170, 150, 150, self.bird.x, self.bird.y)
 
 
 
 class Bird:
     def __init__(self):
-        self.x, self.y = 400, 500
+        self.x, self.y = random.randint(100,1500), 500
         self.frame = 0
         self.face_dir = 1
-        self.dir = 0
+        self.dir = 1
         self.image = load_image('bird_animation.png')
 
         self.FLY = Fly(self)
@@ -40,10 +56,10 @@ class Bird:
         )
 
     def update(self):
-        pass
+        self.state_machine.update()
 
     def handle_event(self, event):
         pass
 
     def draw(self):
-        pass
+        self.state_machine.draw()
