@@ -30,6 +30,9 @@ class Fly:
     def do(self):
         self.bird.frame = (self.bird.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 14
         self.bird.x += self.bird.dir * RUN_SPEED_PPS * game_framework.frame_time
+        if self.bird.x >= 1600 or self.bird.x <= 0:
+            self.bird.dir *= -1
+            self.bird.face_dir *= -1
 
     def draw(self):
         if self.bird.face_dir == 1:
@@ -41,11 +44,11 @@ class Fly:
                 self.bird.image.clip_draw(int(self.bird.frame-10) * 181, 168*0, 170, 160, self.bird.x, self.bird.y)
         else:
             if 0 <= self.bird.frame <= 4:
-                self.bird.image.clip_composite_draw(int(self.bird.frame) * 181, 168 * 2, 170, 160, self.bird.x, self.bird.y)
+                self.bird.image.clip_composite_draw(int(self.bird.frame) * 181, 168 * 2, 170, 160, 0, 'h', self.bird.x, self.bird.y, 170, 160)
             elif 5 <= self.bird.frame <= 9:
-                self.bird.image.clip_composite_draw(int(self.bird.frame - 5) * 181, 168 * 1, 170, 160, self.bird.x, self.bird.y)
+                self.bird.image.clip_composite_draw(int(self.bird.frame - 5) * 181, 168 * 1, 170, 160, 0, 'h',self.bird.x, self.bird.y, 170, 160)
             elif 10 <= self.bird.frame <= 13:
-                self.bird.image.clip_composite_draw(int(self.bird.frame - 10) * 181, 168 * 0, 170, 160, self.bird.x, self.bird.y)
+                self.bird.image.clip_composite_draw(int(self.bird.frame - 10) * 181, 168 * 0, 170, 160, 0, 'h',self.bird.x, self.bird.y, 170, 160)
 
 
 
@@ -53,8 +56,7 @@ class Bird:
     def __init__(self):
         self.x, self.y = random.randint(100,1500), 500
         self.frame = 0
-        self.face_dir = 1
-        self.dir = 1
+        self.dir = self.face_dir = random.choice([-1, 1])
         self.image = load_image('bird_animation.png')
 
         self.FLY = Fly(self)
