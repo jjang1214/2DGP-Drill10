@@ -12,10 +12,26 @@ RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
-TIME_PER_ACTION = 1.0
+TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 14
 
+frame = [
+    (34,362,146,144),
+    (216,364,146,142),
+    (398,364,146,142),
+    (554,360,172,140),
+    (728,370,182,136),
+    (34,170,146,120),
+    (216,166,146,124),
+    (398,170,146,120),
+    (580,180,146,110),
+    (762,178,146,110),
+    (34,6,146,110),
+    (216,4,146,106),
+    (376,22,168,90),
+    (546,22,180,116)
+]
 
 class Fly:
     def __init__(self, bird):
@@ -35,21 +51,13 @@ class Fly:
             self.bird.face_dir *= -1
 
     def draw(self):
-        if self.bird.face_dir == 1:
-            if 0 <= self.bird.frame <= 4:
-                self.bird.image.clip_draw(int(self.bird.frame) * 181, 168*2, 170, 160, self.bird.x, self.bird.y)
-            elif 5 <= self.bird.frame <= 9:
-                self.bird.image.clip_draw(int(self.bird.frame-5) * 181, 168*1, 170, 160, self.bird.x, self.bird.y)
-            elif 10 <= self.bird.frame <= 13:
-                self.bird.image.clip_draw(int(self.bird.frame-10) * 181, 168*0, 170, 160, self.bird.x, self.bird.y)
-        else:
-            if 0 <= self.bird.frame <= 4:
-                self.bird.image.clip_composite_draw(int(self.bird.frame) * 181, 168 * 2, 170, 160, 0, 'h', self.bird.x, self.bird.y, 170, 160)
-            elif 5 <= self.bird.frame <= 9:
-                self.bird.image.clip_composite_draw(int(self.bird.frame - 5) * 181, 168 * 1, 170, 160, 0, 'h',self.bird.x, self.bird.y, 170, 160)
-            elif 10 <= self.bird.frame <= 13:
-                self.bird.image.clip_composite_draw(int(self.bird.frame - 10) * 181, 168 * 0, 170, 160, 0, 'h',self.bird.x, self.bird.y, 170, 160)
+        frame_index = int(self.bird.frame)
+        x, y, w, h = frame[frame_index]
 
+        if self.bird.face_dir == 1:
+            self.bird.image.clip_draw(x, y, w, h, self.bird.x, self.bird.y)
+        else:
+            self.bird.image.clip_composite_draw(x, y, w, h, 0,'h',self.bird.x, self.bird.y,w,h)
 
 
 class Bird:
