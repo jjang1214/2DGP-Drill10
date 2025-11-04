@@ -55,7 +55,7 @@ class Fly:
 class Bird:
     def __init__(self):
         self.x, self.y = random.randint(100,1500), 500
-        self.frame = 0
+        self.frame = random.randint(0,13)
         self.dir = self.face_dir = random.choice([-1, 1])
         self.image = load_image('bird_animation.png')
 
